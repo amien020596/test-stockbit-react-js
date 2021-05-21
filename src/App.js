@@ -1,25 +1,42 @@
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import { Route, Switch } from "react-router-dom";
+import Home from './Pages/Home';
+import Detail from './Pages/Detail';
+import SearchContext from './Store/Context/Search-context';
+import { useContext } from 'react';
+import { connect } from 'react-redux';
+import { searchMovies } from './Store/Actions/Movies';
+import { ModalContextProvider } from './Store/Context/Modal-context';
+
+function App(props) {
+  const searchContext = useContext(SearchContext)
+  const wordsSearch = searchContext.search
+
+  props.setWordsSearch(wordsSearch)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ marginLeft: "auto", marginRight: "auto" }}>
+      <ModalContextProvider>
+        <Switch>
+          <Route path="/" exact>
+            <Home />
+          </Route>
+          <Route path="/detail" >
+            <Detail />
+          </Route>
+        </Switch>
+      </ModalContextProvider>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {}
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    setWordsSearch: (words) => dispatch(searchMovies(words))
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
